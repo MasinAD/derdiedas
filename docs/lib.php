@@ -2,14 +2,21 @@
 	//Initialize session
 	session_start();
 	$langcode = "de";
-	$_SESSION[$langcode."previousNoun"] = $_SESSION[$langcode."noun"];
-	$_SESSION[$langcode."previousArticle"] = $_SESSION[$langcode."article"];
-	$_SESSION[$langcode."previousAnswer"] = $_SESSION[$langcode."answer"];
-	$_SESSION[$langcode."previousGuess"] = $_SESSION[$langcode."guess"];
+	if(isset($_SESSION[$langcode."noun"])) $_SESSION[$langcode."previousNoun"] = $_SESSION[$langcode."noun"];
+	if(isset($_SESSION[$langcode."article"])) $_SESSION[$langcode."previousArticle"] = $_SESSION[$langcode."article"];
+	if(isset($_SESSION[$langcode."answer"])) $_SESSION[$langcode."previousAnswer"] = $_SESSION[$langcode."answer"];
+	if(isset($_SESSION[$langcode."guess"])) $_SESSION[$langcode."previousGuess"] = $_SESSION[$langcode."guess"];
 	
 	if($_SESSION[$langcode."points"]=="") {$_SESSION[$langcode."points"]=0;}
 	if($_SESSION[$langcode."round"]=="") {$_SESSION[$langcode."round"]=1;}
 	
+	$context = stream_context_create(
+		array(
+			"http" => array(
+				"header" => "User-Agent: DerDieDas/1.1 (http://auregann.fr/derdiedas/)"
+			)
+		)
+	);
 	//Query
 	$sparqlQuery = '
 	SELECT ?lemma (SAMPLE(?gender) AS ?gender) WITH {
@@ -30,7 +37,7 @@
 	HAVING(COUNT(?gender) = 1)';
 
 	//get result of the query in json
-	$result = file_get_contents('https://query.wikidata.org/bigdata/namespace/wdq/sparql?format=json&query='.urlencode($sparqlQuery), false, stream_context_create(array('http' => array('header' => 'User-Agent: DerDieDas/1.1 (http://auregann.fr/derdiedas/)'))));
+	$result = file_get_contents('https://query.wikidata.org/bigdata/namespace/wdq/sparql?format=json&query='.urlencode($sparqlQuery), false, $context);
 
 	
 	//parse the query
