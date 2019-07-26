@@ -23,7 +23,7 @@
 			<div>
 <?php 
 	//end of the game, display total points
-	if($phase=='end')
+	if(isset($phase) && $phase=='end')
 	{ 
 	echo '<p>Thanks for playing!</p>
 	<p id="score"> Your score is: '.$_SESSION[$langcode."points"].'</p>
@@ -70,7 +70,7 @@
 			<div>
 				<p class="previously">Previously:</p>
 				<div class="">
-					<?php echo $_SESSION[$langcode."list"]; //list of the previous nouns played ?>
+					<?php if(isset($_SESSION[$langcode."list"])) echo $_SESSION[$langcode."list"]; //list of the previous nouns played ?>
 				</div>
 			
 			
@@ -83,7 +83,7 @@
 	
 </html>
 <?php 
-	if($phase=='end')
+	if(isset($phase) && $phase=='end')
 	{
 		session_unset();
 			$_SESSION[$langcode."guess"]='';
